@@ -434,6 +434,93 @@
         .center-circle.tutorial-highlight {
             position: absolute !important;
         }
+
+        /* =========================================
+           MOBILE RESPONSIVENESS CSS
+           ========================================= */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 80px 10px 20px 10px; /* Leave space for fixed sidebar toggle */
+            }
+
+            .worksheet-container {
+                padding: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .scripture-box {
+                width: 100%;
+                box-sizing: border-box;
+                justify-content: center;
+            }
+
+            .grid-container {
+                display: flex;
+                flex-direction: column;
+                height: auto;
+                gap: 10px;
+            }
+
+            .quadrant {
+                min-height: 200px;
+                border-radius: 8px;
+            }
+
+            /* Remove layout margins designed for desktop circle */
+            .bg-top-left .rich-textarea, 
+            .bg-top-right textarea,
+            .bg-bottom-left textarea, 
+            .bg-bottom-right textarea {
+                margin: 0 !important;
+            }
+
+            /* Order the stack naturally */
+            .bg-top-left { order: 1; }
+            .bg-top-right { order: 2; }
+            .bg-bottom-left { order: 3; }
+            .bg-bottom-right { order: 4; }
+
+            /* Flatten the circle and push it to the bottom */
+            .center-circle {
+                position: relative;
+                top: 0;
+                left: 0;
+                transform: none;
+                width: 100%;
+                height: auto;
+                border-radius: 12px; /* Change from circle to rounded rectangle */
+                order: 5;
+                padding: 25px 20px;
+                margin-top: 10px;
+                gap: 20px;
+            }
+
+            .circle-half {
+                height: auto;
+            }
+
+            .circle-half textarea {
+                min-height: 100px;
+            }
+            
+            .center-circle.tutorial-highlight {
+                position: relative !important;
+            }
+
+            /* Force tutorial dialog to center screen to avoid overflow bugs */
+            #tutorial-dialog {
+                width: 85%;
+                left: 7.5% !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+                box-sizing: border-box;
+            }
+        }
         
     </style>
 </head>
@@ -729,6 +816,12 @@
         function updateDialogPosition(step) {
             const dialog = document.getElementById('tutorial-dialog');
             
+            // Skip dynamic positioning on small mobile screens
+            if (window.innerWidth <= 768) {
+                dialog.style.transform = ''; 
+                return; 
+            }
+
             if (!step.id) {
                 dialog.style.top = '50%';
                 dialog.style.left = '50%';
