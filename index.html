@@ -440,7 +440,7 @@
            ========================================= */
         @media (max-width: 768px) {
             .main-content {
-                padding: 80px 10px 20px 10px; /* Leave space for fixed sidebar toggle */
+                padding: 80px 10px 20px 10px; 
             }
 
             .worksheet-container {
@@ -471,7 +471,6 @@
                 border-radius: 8px;
             }
 
-            /* Remove layout margins designed for desktop circle */
             .bg-top-left .rich-textarea, 
             .bg-top-right textarea,
             .bg-bottom-left textarea, 
@@ -479,13 +478,11 @@
                 margin: 0 !important;
             }
 
-            /* Order the stack naturally */
             .bg-top-left { order: 1; }
             .bg-top-right { order: 2; }
             .bg-bottom-left { order: 3; }
             .bg-bottom-right { order: 4; }
 
-            /* Flatten the circle and push it to the bottom */
             .center-circle {
                 position: relative;
                 top: 0;
@@ -493,7 +490,7 @@
                 transform: none;
                 width: 100%;
                 height: auto;
-                border-radius: 12px; /* Change from circle to rounded rectangle */
+                border-radius: 12px; 
                 order: 5;
                 padding: 25px 20px;
                 margin-top: 10px;
@@ -512,16 +509,32 @@
                 position: relative !important;
             }
 
-            /* Force tutorial dialog to center screen to avoid overflow bugs */
+            /* Convert floating modal to a bottom sheet for mobile */
             #tutorial-dialog {
-                width: 85%;
-                left: 7.5% !important;
-                top: 50% !important;
-                transform: translateY(-50%) !important;
+                width: 100%;
+                left: 0 !important;
+                bottom: 0 !important;
+                top: auto !important;
+                transform: none !important;
+                border-radius: 20px 20px 0 0;
                 box-sizing: border-box;
+                padding-bottom: 40px; /* Safe area for bottom notches */
+                box-shadow: 0 -5px 30px rgba(0,0,0,0.3);
             }
         }
-        
+
+        /* =========================================
+           FORCE DESKTOP MODE FOR EXPORTING
+           ========================================= */
+        body.export-mode .main-content { padding: 40px; }
+        body.export-mode .app-wrapper { width: 880px !important; max-width: 880px !important; }
+        body.export-mode .header { flex-direction: row !important; align-items: flex-end !important; }
+        body.export-mode .scripture-box { width: 300px !important; }
+        body.export-mode .grid-container { display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-rows: 1fr 1fr !important; height: 900px !important; gap: 6px !important; }
+        body.export-mode .quadrant { border-radius: 0 !important; }
+        body.export-mode .center-circle { position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 340px !important; height: 340px !important; border-radius: 50% !important; order: unset !important; margin-top: 0 !important; }
+        body.export-mode .bg-top-left .rich-textarea, body.export-mode .bg-top-right textarea { margin-bottom: 170px !important; margin-top: 0 !important;}
+        body.export-mode .bg-bottom-left textarea, body.export-mode .bg-bottom-right textarea { margin-top: 170px !important; margin-bottom: 0 !important; }
     </style>
 </head>
 <body>
@@ -699,24 +712,39 @@
         const exportOptions = {
             scale: 2, 
             useCORS: true,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
+            windowWidth: 1000 // Give canvas plenty of room for the desktop render
         };
 
         function prepareForExport(callback) {
+            // Close sidebar
             document.getElementById('sidebar').classList.remove('active');
             document.body.classList.remove('sidebar-open');
-            setTimeout(callback, 300);
+            
+            // Force Desktop Layout via Class
+            document.body.classList.add('export-mode');
+            
+            // Scroll top to prevent iOS clipping bugs
+            window.scrollTo(0, 0); 
+
+            // Give the browser time to reflow the DOM to the desktop grid before capturing
+            setTimeout(callback, 500);
+        }
+
+        function restoreAfterExport() {
+            document.body.classList.remove('export-mode');
         }
 
         function exportToPNG() {
             prepareForExport(() => {
                 const captureArea = document.getElementById('capture-area');
                 html2canvas(captureArea, exportOptions).then(canvas => {
+                    restoreAfterExport();
                     const link = document.createElement('a');
                     link.download = 'SOAR_Bible_Study.png';
                     link.href = canvas.toDataURL('image/png');
                     link.click();
-                });
+                }).catch(() => { restoreAfterExport(); });
             });
         }
 
@@ -724,13 +752,14 @@
             prepareForExport(() => {
                 const captureArea = document.getElementById('capture-area');
                 html2canvas(captureArea, exportOptions).then(canvas => {
+                    restoreAfterExport();
                     const imgData = canvas.toDataURL('image/png');
                     const { jsPDF } = window.jspdf;
                     
                     const pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height]);
                     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
                     pdf.save('SOAR_Bible_Study.pdf');
-                });
+                }).catch(() => { restoreAfterExport(); });
             });
         }
 
@@ -816,12 +845,18 @@
         function updateDialogPosition(step) {
             const dialog = document.getElementById('tutorial-dialog');
             
-            // Skip dynamic positioning on small mobile screens
+            // Skip dynamic positioning on small mobile screens and use Bottom Sheet logic
             if (window.innerWidth <= 768) {
                 dialog.style.transform = ''; 
+                // Auto-scroll the highlighted element into view so the bottom sheet doesn't cover it
+                if (step.id) {
+                    const target = document.getElementById(step.id);
+                    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 return; 
             }
 
+            // Desktop dynamic positioning below
             if (!step.id) {
                 dialog.style.top = '50%';
                 dialog.style.left = '50%';
