@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOAR Bible Study</title>
     
-    <!-- External Libraries for Exporting -->
+    <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         /* Define Color Themes using CSS Variables */
@@ -62,7 +63,7 @@
             position: fixed;
             top: 0;
             right: -320px; 
-            width: 300px;
+            width: 320px;
             height: 100vh;
             background-color: #ffffff;
             box-shadow: -4px 0 25px rgba(0,0,0,0.1);
@@ -70,10 +71,11 @@
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 25px;
             z-index: 1002;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow-y: auto;
         }
 
         .sidebar.active { right: 0; }
@@ -83,7 +85,7 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 15px;
+            padding-bottom: 10px;
         }
 
         .sidebar-header h2 {
@@ -106,6 +108,46 @@
 
         .close-sidebar:hover { color: #333; }
 
+        /* Sidebar Tips UI */
+        .sidebar-tips {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 20px;
+        }
+
+        .tip-box {
+            background: #f8f9fa;
+            border-left: 4px solid #333;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .tip-box h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #000;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tip-box p {
+            margin: 0;
+            font-size: 13.5px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .teaching-tip-box {
+            border-left-color: #4CAF50;
+        }
+
+        /* Sidebar Settings UI */
         .sidebar-section {
             display: flex;
             flex-direction: column;
@@ -118,17 +160,6 @@
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
-
-        .sidebar-section .toggle-label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: normal;
-            text-transform: none;
-            color: #444;
-            cursor: pointer;
-            font-size: 14px;
         }
 
         .sidebar-select {
@@ -155,11 +186,54 @@
             transition: background-color 0.2s;
             font-family: inherit;
             width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .sidebar-btn:hover { background-color: #e0e0e0; }
         .danger-btn { color: #d32f2f; background-color: #fff; border-color: #ffcdd2; }
         .danger-btn:hover { background-color: #ffebee; }
+
+        /* Video Thumbnail Styling */
+        .video-thumbnail-container {
+            display: block; 
+            position: relative;
+            text-decoration: none;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            margin-top: 12px;
+        }
+
+        .video-thumbnail-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .video-thumbnail-container img {
+            width: 100%;
+            display: block;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 30, 30, 0.85);
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
         /* =========================================
            MAIN LAYOUT & WORKSHEET CSS
@@ -181,81 +255,6 @@
             width: 100%;
             justify-content: center;
             align-items: flex-start;
-        }
-
-        /* Dynamically toggled column so center card stays perfectly centered when off */
-        .study-tip-column {
-            width: 340px;
-            flex-shrink: 0;
-            display: none; 
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .study-tip-card {
-            background: #ffffff;
-            color: #333;
-            padding: 25px;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            display: flex; 
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .study-tip-card .tip-header {
-            font-weight: bold;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 10px;
-            color: #000;
-        }
-
-        .study-tip-card p {
-            margin: 0;
-            font-size: 15px;
-            line-height: 1.5;
-            color: #555;
-        }
-
-        /* Video Thumbnail Styling */
-        .video-thumbnail-container {
-            display: none; 
-            position: relative;
-            text-decoration: none;
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
-        }
-
-        .video-thumbnail-container:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .video-thumbnail-container img {
-            width: 100%;
-            display: block;
-        }
-
-        .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(30, 30, 30, 0.85);
-            color: #fff;
-            padding: 10px 18px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 14px;
-            letter-spacing: 0.5px;
-            backdrop-filter: blur(4px);
         }
 
         .app-wrapper {
@@ -331,7 +330,6 @@
             position: relative;
         }
 
-        /* Quadrant must be block for floats to wrap text correctly */
         .quadrant {
             padding: 20px;
             display: block; 
@@ -345,12 +343,59 @@
         .bg-bottom-left { background-color: var(--bg-bl); }
         .bg-bottom-right { background-color: var(--bg-br); }
 
-        .quadrant p {
+        .quadrant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .quadrant-header p {
             font-size: 15px;
             color: #222;
-            margin: 0 0 10px 0;
+            margin: 0;
             line-height: 1.4;
             font-weight: bold;
+            flex-grow: 1;
+        }
+
+        /* Tips Trigger Icon - Ghost Effect */
+        .tip-trigger {
+            cursor: pointer;
+            font-size: 14px;
+            color: #555;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            min-width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.25s ease;
+            margin-left: 12px;
+            margin-top: -2px;
+            
+            /* Hidden by default */
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none; 
+        }
+
+        /* Show when quadrant is hovered or text box is clicked into */
+        .quadrant:hover .tip-trigger,
+        .quadrant:focus-within .tip-trigger {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .tip-trigger:hover {
+            transform: scale(1.1) !important;
+            background: #fff;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         /* =========================================
@@ -413,44 +458,21 @@
         /* =========================================
            TUTORIAL OVERLAY CSS
            ========================================= */
-        #tutorial-backdrop {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 9998;
-        }
-
-        #tutorial-dialog {
-            display: none;
-            position: fixed; 
-            background: #fff;
-            padding: 25px 35px;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            z-index: 10000;
-            width: 320px; 
-            text-align: center;
-            font-family: 'Georgia', serif;
-            transition: top 0.4s ease-in-out, left 0.4s ease-in-out, transform 0.4s ease-in-out;
-        }
-
+        #tutorial-backdrop { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); z-index: 9998; }
+        #tutorial-dialog { display: none; position: fixed; background: #fff; padding: 25px 35px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 10000; width: 320px; text-align: center; font-family: 'Georgia', serif; transition: top 0.4s ease-in-out, left 0.4s ease-in-out, transform 0.4s ease-in-out; }
         #tutorial-dialog h3 { margin-top: 0; margin-bottom: 15px; font-size: 22px; color: #333; }
         #tutorial-text { font-size: 16px; color: #555; line-height: 1.5; margin-bottom: 20px; }
         .tutorial-buttons { display: flex; justify-content: center; gap: 15px; }
-
         .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 15px; font-family: inherit; }
         .btn-primary { background: #333; color: #fff; }
         .btn-primary:hover { background: #555; }
         .btn-secondary { background: #e0e0e0; color: #333; }
         .btn-secondary:hover { background: #ccc; }
-
-        .tutorial-highlight {
-            z-index: 9999 !important;
-            box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(0,0,0,0.5) !important;
-            background-color: #fff !important;
-        }
         
+        /* Forces the trigger to be visible during the tutorial step */
+        .tutorial-highlight .tip-trigger { opacity: 1 !important; transform: scale(1) !important; pointer-events: auto !important; }
+
+        .tutorial-highlight { z-index: 9999 !important; box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(0,0,0,0.5) !important; background-color: #fff !important; }
         .quadrant.tutorial-highlight, .scripture-box.tutorial-highlight { position: relative; border-radius: 6px; }
         .sidebar-toggle.tutorial-highlight { position: fixed !important; }
         .center-circle.tutorial-highlight { position: absolute !important; }
@@ -460,11 +482,8 @@
            ========================================= */
         @media (max-width: 1250px) {
             .layout-wrapper { flex-direction: column; align-items: center; }
-            .study-tip-column { width: 100%; max-width: 880px; }
         }
-
         @media (max-width: 768px) {
-            /* Disable wrapping shapes on mobile */
             .tl-pusher, .tl-shape, .tr-pusher, .tr-shape, .bl-shape, .br-shape { display: none; }
             .main-content { padding: 80px 10px 20px 10px; }
             .worksheet-container { padding: 20px; }
@@ -478,6 +497,9 @@
             .circle-half textarea { min-height: 100px; }
             .center-circle.tutorial-highlight { position: relative !important; }
             #tutorial-dialog { width: 100%; left: 0 !important; bottom: 0 !important; top: auto !important; transform: none !important; border-radius: 20px 20px 0 0; box-sizing: border-box; padding-bottom: 40px; box-shadow: 0 -5px 30px rgba(0,0,0,0.3); }
+            
+            /* Mobile override: devices don't have hover, so make icons visible */
+            .tip-trigger { opacity: 1; transform: scale(1); pointer-events: auto; }
         }
 
         /* =========================================
@@ -491,6 +513,7 @@
         body.export-mode .quadrant { border-radius: 0 !important; }
         body.export-mode .center-circle { position: absolute !important; top: 0 !important; bottom: 0 !important; left: 0 !important; right: 0 !important; margin: auto !important; transform: none !important; width: 340px !important; height: 340px !important; border-radius: 50% !important; order: unset !important; }
         body.export-mode .tl-pusher, body.export-mode .tl-shape, body.export-mode .tr-pusher, body.export-mode .tr-shape, body.export-mode .bl-shape, body.export-mode .br-shape { display: block !important; }
+        body.export-mode .tip-trigger { display: none !important; } /* Hide icons in export */
     </style>
 </head>
 <body>
@@ -507,69 +530,63 @@
     </div>
 
     <!-- Floating Toggle Button for Sidebar -->
-    <button class="sidebar-toggle" id="step-7" onclick="toggleSidebar()">
-        ⚙️ Tools
+    <button class="sidebar-toggle" id="step-7" onclick="openTools()">
+        <i class="fa-solid fa-gear"></i> Tools
     </button>
 
     <!-- Slide-out Sidebar Dashboard -->
     <div class="sidebar" id="sidebar" data-html2canvas-ignore="true">
         <div class="sidebar-header">
-            <h2>Settings</h2>
-            <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
+            <h2>Settings & Tips</h2>
+            <button class="close-sidebar" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         
+        <!-- Dynamic Tips Section -->
+        <div class="sidebar-tips" id="sidebarTips" style="display: none;">
+            <div class="tip-box">
+                <h4><i class="fa-solid fa-book-open"></i> Study Tip</h4>
+                <p id="studyTipContent">Hover over a section and click the <i class="fa-solid fa-lightbulb"></i> icon to view contextual study tips!</p>
+                
+                <!-- Dynamic Video Container -->
+                <div id="sidebarVideoContainer" style="display: none;">
+                    <a id="tipVideoLink" href="" target="_blank" class="video-thumbnail-container">
+                        <img id="tipVideoThumb" src="" alt="Video Thumbnail">
+                        <div class="play-button"><i class="fa-solid fa-play"></i> Watch on YouTube</div>
+                    </a>
+                </div>
+            </div>
+            <div class="tip-box teaching-tip-box">
+                <h4><i class="fa-solid fa-apple-whole"></i> Teaching Tip</h4>
+                <p id="teachingTipContent">Hover over a section and click the <i class="fa-solid fa-lightbulb"></i> icon to view teaching tips!</p>
+            </div>
+        </div>
+
         <div class="sidebar-section">
             <label>Color Palette</label>
             <select class="sidebar-select" onchange="changeTheme(this.value)">
-                <option value="galilee">Sea of Galilee</option>
-                <option value="eden">Garden of Eden</option>
+                <option value="galilee">The Sea</option>
+                <option value="eden">The Garden</option>
                 <option value="wilderness">The Wilderness</option>
-                <option value="joseph">Joseph's Coat</option>
+                <option value="joseph">The Coat</option>
                 <option value="covenant">The Covenant</option>
             </select>
         </div>
 
         <div class="sidebar-section">
-            <label>Study Tips & Video</label>
-            <label class="toggle-label">
-                <!-- Turned off by default -->
-                <input type="checkbox" id="tipsToggle" onchange="toggleTips()"> Show Video Recommendations
-            </label>
-        </div>
-
-        <div class="sidebar-section">
             <label>Export Notes</label>
-            <button class="sidebar-btn" onclick="exportToPNG()">📥 Save as PNG</button>
-            <button class="sidebar-btn" onclick="exportToPDF()">📄 Save as PDF</button>
+            <button class="sidebar-btn" onclick="exportToPNG()"><i class="fa-solid fa-download"></i> Save as PNG</button>
+            <button class="sidebar-btn" onclick="exportToPDF()"><i class="fa-solid fa-file-pdf"></i> Save as PDF</button>
         </div>
 
         <div class="sidebar-section">
             <label>Reset Workspace</label>
-            <button class="sidebar-btn danger-btn" onclick="clearForm()">🗑️ Clear Form</button>
+            <button class="sidebar-btn danger-btn" onclick="clearForm()"><i class="fa-solid fa-trash-can"></i> Clear Form</button>
         </div>
     </div>
 
     <div class="main-content">
         <div class="layout-wrapper">
             
-            <!-- Left Column for Study Tip / Embedded Video -->
-            <div class="study-tip-column" id="studyTipColumn">
-                <div id="tipCard" class="study-tip-card">
-                    <div class="tip-header">🎥 Study Tip</div>
-                    <p>We recommend watching the Bible Project's overview video for <strong id="tipBookName">this book</strong> to grasp the overarching narrative before you study!</p>
-                    
-                    <!-- Clickable Video Thumbnail (Bypasses local iframe restrictions) -->
-                    <a id="tipVideoLink" href="" target="_blank" class="video-thumbnail-container">
-                        <img id="tipVideoThumb" src="" alt="Video Thumbnail">
-                        <div class="play-button">▶ Watch on YouTube</div>
-                    </a>
-                    
-                    <p id="tipMissingText" style="display:none; font-size: 13px; color: #888; font-style: italic;">
-                        (Video ID missing in code database. Add to view.)
-                    </p>
-                </div>
-            </div>
-
             <!-- The Main App / Worksheet designated for export -->
             <div class="app-wrapper">
                 <div class="worksheet-container" id="capture-area">
@@ -596,7 +613,10 @@
                         <div class="quadrant bg-top-left" id="step-2">
                             <div class="tl-pusher"></div>
                             <div class="tl-shape"></div>
-                            <p>What context is important to understand this Scripture? (author, time, purpose)</p>
+                            <div class="quadrant-header">
+                                <p>What context is important to understand this Scripture? (author, time, purpose)</p>
+                                <span class="tip-trigger" onclick="openTips('context')" title="View Tips"><i class="fa-solid fa-lightbulb"></i></span>
+                            </div>
                             <div id="contextArea" class="rich-textarea" contenteditable="true" data-placeholder="Type your context notes here..."></div>
                         </div>
 
@@ -604,22 +624,30 @@
                         <div class="quadrant bg-top-right" id="step-3">
                             <div class="tr-pusher"></div>
                             <div class="tr-shape"></div>
-                            <p>What words do I need to study further? (repeated words, confusing words, etc.)</p>
-                            <!-- Swapped to rich-textarea so floats wrap effectively -->
-                            <div class="rich-textarea" contenteditable="true" data-placeholder="Type words to study here..."></div>
+                            <div class="quadrant-header">
+                                <p>What words do I need to study further? (repeated words, confusing words, etc.)</p>
+                                <span class="tip-trigger" onclick="openTips('words')" title="View Tips"><i class="fa-solid fa-lightbulb"></i></span>
+                            </div>
+                            <div class="rich-textarea" id="wordStudyArea" contenteditable="true" data-placeholder="Type words to study here..."></div>
                         </div>
 
                         <!-- Bottom Left -->
                         <div class="quadrant bg-bottom-left" id="step-4">
                             <div class="bl-shape"></div>
-                            <p>What questions come to mind as you read the passage?</p>
+                            <div class="quadrant-header">
+                                <p>What questions come to mind as you read the passage?</p>
+                                <span class="tip-trigger" onclick="openTips('questions')" title="View Tips"><i class="fa-solid fa-lightbulb"></i></span>
+                            </div>
                             <div class="rich-textarea" contenteditable="true" data-placeholder="Type your questions here..."></div>
                         </div>
 
                         <!-- Bottom Right -->
                         <div class="quadrant bg-bottom-right" id="step-5">
                             <div class="br-shape"></div>
-                            <p>How does this passage link with other parts of Scripture? (cross-reference)</p>
+                            <div class="quadrant-header">
+                                <p>How does this passage link with other parts of Scripture? (cross-reference)</p>
+                                <span class="tip-trigger" onclick="openTips('links')" title="View Tips"><i class="fa-solid fa-lightbulb"></i></span>
+                            </div>
                             <div class="rich-textarea" contenteditable="true" data-placeholder="Type cross-references here..."></div>
                         </div>
 
@@ -646,18 +674,29 @@
         // =========================================
         // SIDEBAR & SETTINGS LOGIC
         // =========================================
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
-            document.body.classList.toggle('sidebar-open');
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.body.classList.remove('sidebar-open');
         }
 
-        // Toggled off by default
-        let tipsEnabled = false; 
-        
-        function toggleTips() {
-            tipsEnabled = document.getElementById('tipsToggle').checked;
-            triggerContextFill(); 
+        function openTools() {
+            const sidebar = document.getElementById('sidebar');
+            const tips = document.getElementById('sidebarTips');
+            
+            if (sidebar.classList.contains('active')) {
+                if (tips.style.display === 'none') {
+                    // Already in tools mode, close it entirely
+                    closeSidebar();
+                } else {
+                    // Open, but showing tips. Switch to tools mode
+                    tips.style.display = 'none';
+                }
+            } else {
+                // Closed. Open in tools mode
+                tips.style.display = 'none';
+                sidebar.classList.add('active');
+                document.body.classList.add('sidebar-open');
+            }
         }
 
         function changeTheme(theme) {
@@ -674,14 +713,14 @@
             } else if (theme === 'joseph') {
                 root.style.setProperty('--bg-tl', '#FFE5D9'); root.style.setProperty('--bg-tr', '#FFF1E6'); root.style.setProperty('--bg-bl', '#FCD5CE'); root.style.setProperty('--bg-br', '#E8E8F2'); 
             } else if (theme === 'covenant') {
-                root.style.setProperty('--bg-tl', '#E2E2FD'); root.style.setProperty('--bg-tr', '#D3F3EE'); root.style.setProperty('--bg-bl', '#FFF2CC'); root.style.setProperty('--bg-br', '#DCE8FF'); 
+                root.style.setProperty('--bg-tl', '#f6c6c6'); root.style.setProperty('--bg-tr', '#D3F3EE'); root.style.setProperty('--bg-bl', '#FFF2CC'); root.style.setProperty('--bg-br', '#DCE8FF'); 
             }
         }
 
         function clearForm() {
             if(confirm("Are you sure you want to completely clear this worksheet? All your notes will be lost.")) {
                 document.getElementById('scriptureInput').value = '';
-                document.getElementById('studyTipColumn').style.display = 'none';
+                document.getElementById('sidebarVideoContainer').style.display = 'none';
                 
                 const textareas = document.querySelectorAll('textarea');
                 textareas.forEach(ta => ta.value = '');
@@ -689,8 +728,70 @@
                 const richTextareas = document.querySelectorAll('.rich-textarea');
                 richTextareas.forEach(ta => ta.innerHTML = '');
                 
-                document.getElementById('sidebar').classList.remove('active');
-                document.body.classList.remove('sidebar-open');
+                closeSidebar();
+                
+                // Reset tips
+                document.getElementById('studyTipContent').innerHTML = "Hover over a section and click the <i class='fa-solid fa-lightbulb'></i> icon to view contextual study tips!";
+                document.getElementById('teachingTipContent').innerHTML = "Hover over a section and click the <i class='fa-solid fa-lightbulb'></i> icon to view teaching tips!";
+                
+                // Reset Word Study base tip just in case
+                sectionTips['words'].study = baseWordStudyTip;
+            }
+        }
+
+        // =========================================
+        // TIPS LOGIC
+        // =========================================
+        const baseWordStudyTip = "Use a concordance or Blue Letter Bible to look up the original Hebrew or Greek words. A highlighter is useful here! When we see repetition in Scripture, that is usually pointing to emphasis.";
+        let currentActiveTipSection = null;
+
+        const sectionTips = {
+            'context': {
+                study: "Look up the author's background and the historical timeline. Understanding <em>who</em> they were speaking to changes how we read the text. If a video is available for this book, watch it to grasp the overarching narrative before you study!",
+                teach: "Teaching tips for providing context coming soon!"
+            },
+            'words': {
+                study: baseWordStudyTip,
+                teach: "Teaching tips for word studies coming soon!"
+            },
+            'questions': {
+                study: "Don't filter yourself here. Ask the hard questions—often the most confusing verse holds the deepest truth once explored.",
+                teach: "Teaching tips for navigating questions coming soon!"
+            },
+            'links': {
+                study: "Follow the margin cross-references in your Bible. Let Scripture interpret Scripture to see how this passage fits into the grander narrative.",
+                teach: "Teaching tips for cross-referencing coming soon!"
+            }
+        };
+
+        function openTips(section) {
+            currentActiveTipSection = section;
+            
+            // Populate Tip Content
+            document.getElementById('studyTipContent').innerHTML = sectionTips[section].study;
+            document.getElementById('teachingTipContent').innerHTML = sectionTips[section].teach;
+            
+            // Manage Video Container
+            const videoContainer = document.getElementById('sidebarVideoContainer');
+            const tipVideoLink = document.getElementById('tipVideoLink');
+            const tipVideoThumb = document.getElementById('tipVideoThumb');
+
+            if (section === 'context' && currentVideoId && currentVideoId.trim() !== "") {
+                tipVideoLink.href = "https://www.youtube.com/watch?v=" + currentVideoId;
+                tipVideoThumb.src = "https://img.youtube.com/vi/" + currentVideoId + "/hqdefault.jpg";
+                videoContainer.style.display = 'block';
+            } else {
+                videoContainer.style.display = 'none';
+            }
+            
+            // Ensure Tips Container is visible
+            document.getElementById('sidebarTips').style.display = 'flex';
+            
+            // Open sidebar if not open
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('active')) {
+                sidebar.classList.add('active');
+                document.body.classList.add('sidebar-open');
             }
         }
 
@@ -700,8 +801,7 @@
         const exportOptions = { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 1000 };
 
         function prepareForExport(callback) {
-            document.getElementById('sidebar').classList.remove('active');
-            document.body.classList.remove('sidebar-open');
+            closeSidebar();
             document.body.classList.add('export-mode');
             window.scrollTo(0, 0); 
             setTimeout(callback, 500);
@@ -739,8 +839,12 @@
         }
 
         // =========================================
-        // AUTO-FILL CONTEXT LOGIC (66 BOOKS)
+        // DATA AUTO-FILL & API WORD ANALYSIS LOGIC
         // =========================================
+        let currentVideoId = null; 
+        let typingTimer;
+        const doneTypingInterval = 1500; // Wait 1.5s after user stops typing to fetch API
+
         const bibleData = {
             "genesis": { author: "Moses", time: "1440-1400 BC", audience: "Israelites", purpose: "To record the origins of the world and God's covenant.", youtubeId: "KOUV7mWDI34" },
             "exodus": { author: "Moses", time: "1440-1400 BC", audience: "Israelites", purpose: "To document God's deliverance of Israel from Egypt.", youtubeId: "jH_aojNJM3E" },
@@ -810,55 +914,101 @@
             "revelation": { author: "John", time: "90-95 AD", audience: "Seven churches of Asia", purpose: "To reveal the ultimate victory of Jesus Christ.", youtubeId: "5nvVVcYD-0w" }
         };
 
+        // Common English stop words to filter out of the API text
+        const stopWords = new Set(["the", "and", "of", "to", "that", "in", "he", "shall", "unto", "for", "i", "his", "a", "they", "be", "is", "not", "with", "it", "all", "thou", "thy", "was", "which", "my", "me", "but", "ye", "their", "have", "will", "from", "thee", "as", "are", "when", "this", "out", "them", "upon", "by", "man", "there", "said", "came", "up", "now", "did", "on", "so", "what", "or", "who", "an", "if", "we", "then", "were", "do", "no", "at", "because", "into", "has", "had", "him", "her", "she", "those"]);
+
         function triggerContextFill() {
             const inputText = document.getElementById('scriptureInput').value.trim().toLowerCase();
             const contextArea = document.getElementById('contextArea');
-            const studyTipColumn = document.getElementById('studyTipColumn');
-            const tipBookName = document.getElementById('tipBookName');
-            const tipVideoLink = document.getElementById('tipVideoLink');
-            const tipVideoThumb = document.getElementById('tipVideoThumb');
-            const tipMissingText = document.getElementById('tipMissingText');
             
             let matchedBook = null;
-            let displayBookName = "";
-
             for (const book in bibleData) {
                 if (inputText.startsWith(book)) {
                     matchedBook = book;
-                    displayBookName = book.replace(/\b\w/g, l => l.toUpperCase());
                     break; 
                 }
             }
 
             if (matchedBook) {
+                const data = bibleData[matchedBook];
+                currentVideoId = data.youtubeId;
+                
                 if (contextArea.textContent.trim() === "" || contextArea.textContent.startsWith("Author:")) {
-                    const data = bibleData[matchedBook];
                     contextArea.innerHTML = `<strong>Author:</strong> ${data.author}<br><br><strong>Time Period:</strong> ${data.time}<br><br><strong>Audience:</strong> ${data.audience}<br><br><strong>Purpose:</strong> ${data.purpose}`;
                 }
                 
-                if (tipsEnabled) {
-                    tipBookName.innerText = displayBookName;
-                    studyTipColumn.style.display = 'flex';
-                    
-                    const data = bibleData[matchedBook];
-                    if (data.youtubeId && data.youtubeId.trim() !== "") {
-                        tipVideoLink.href = "https://www.youtube.com/watch?v=" + data.youtubeId;
-                        tipVideoThumb.src = "https://img.youtube.com/vi/" + data.youtubeId + "/hqdefault.jpg";
-                        tipVideoLink.style.display = 'block';
-                        tipMissingText.style.display = 'none';
-                    } else {
-                        tipVideoLink.style.display = 'none';
-                        tipMissingText.style.display = 'block';
-                    }
-                } else {
-                    studyTipColumn.style.display = 'none';
+                if (document.getElementById('sidebar').classList.contains('active') && document.getElementById('sidebarTips').style.display === 'flex' && currentActiveTipSection === 'context') {
+                    openTips('context');
                 }
             } else {
-                studyTipColumn.style.display = 'none';
+                currentVideoId = null;
+                document.getElementById('sidebarVideoContainer').style.display = 'none';
             }
         }
 
-        document.getElementById('scriptureInput').addEventListener('input', triggerContextFill);
+        async function fetchWordStudy() {
+            const reference = document.getElementById('scriptureInput').value.trim();
+            
+            // Reset to default base text whenever user types
+            sectionTips['words'].study = baseWordStudyTip;
+
+            // Only fetch if input contains a chapter/verse number
+            if (!/\d/.test(reference)) {
+                // If sidebar is open to words tip, reset the UI to base text
+                if (document.getElementById('sidebar').classList.contains('active') && document.getElementById('sidebarTips').style.display === 'flex' && currentActiveTipSection === 'words') {
+                    document.getElementById('studyTipContent').innerHTML = sectionTips['words'].study;
+                }
+                return;
+            }
+
+            try {
+                // Utilizing the free bible-api.com (Defaults to World English Bible)
+                const response = await fetch(`https://bible-api.com/${encodeURIComponent(reference)}`);
+                if (!response.ok) return;
+                
+                const data = await response.json();
+                const text = data.text;
+                
+                // Strip punctuation and split into array of lowercase words
+                const words = text.toLowerCase().replace(/[^a-z\s]/g, '').split(/\s+/);
+                const counts = {};
+                
+                words.forEach(w => {
+                    if (w.length > 2 && !stopWords.has(w)) {
+                        counts[w] = (counts[w] || 0) + 1;
+                    }
+                });
+
+                // Sort by frequency and grab top 5 that appear at least 4 times
+                const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+                const topWords = sorted.filter(item => item[1] >= 4).slice(0, 5);
+
+                if (topWords.length > 0) {
+                    let html = baseWordStudyTip + "<br><br><strong>These words are possible strong choices to define because they are repeated:</strong><br>";
+                    topWords.forEach(item => {
+                        html += `• ${item[0]} (${item[1]}x)<br>`;
+                    });
+                    
+                    // Update the dictionary
+                    sectionTips['words'].study = html;
+                }
+                
+                // If the sidebar is currently open to the words section, update it in real-time
+                if (document.getElementById('sidebar').classList.contains('active') && document.getElementById('sidebarTips').style.display === 'flex' && currentActiveTipSection === 'words') {
+                    document.getElementById('studyTipContent').innerHTML = sectionTips['words'].study;
+                }
+            } catch (error) {
+                console.error("Error fetching Bible text:", error);
+            }
+        }
+
+        document.getElementById('scriptureInput').addEventListener('input', function() {
+            triggerContextFill(); // Instantly handle context auto-fill
+            
+            // Debounce the API call so it doesn't fire on every single keystroke
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(fetchWordStudy, doneTypingInterval);
+        });
 
         // =========================================
         // TUTORIAL LOGIC & DYNAMIC POSITIONING
@@ -866,12 +1016,12 @@
         const tutorialSteps = [
             { id: null, title: "Welcome to SOAR", text: "Would you like to run through a quick example to see how to use this study method?" },
             { id: 'step-1', placement: 'bottom', title: "Step 1: Scripture", text: "Start by entering a passage. Try typing <strong>'Joshua 1'</strong> into this box to see what happens, then click Next." },
-            { id: 'step-2', placement: 'outer-left', title: "Step 2: Context Added!", text: "Notice how the author, time, audience, and purpose were added automatically. This foundational context helps ground your study." },
+            { id: 'step-2', placement: 'outer-left', title: "Step 2: Context Added!", text: "Notice how the author, time, audience, and purpose were added automatically. You can also click the <i class='fa-solid fa-lightbulb'></i> icon for contextual study tips!" },
             { id: 'step-3', placement: 'outer-right', title: "Step 3: Word Study", text: "Next, note down any words you need to study further. Open your physical Bible to look for repeated or confusing terms and define them here." },
             { id: 'step-4', placement: 'outer-left', title: "Step 4: Questions", text: "As you read, what questions come to mind? Jot them down here so you can explore them later." },
             { id: 'step-5', placement: 'outer-right', title: "Step 5: Cross-Reference", text: "How does this passage link to others? Open your physical Bible again to check its cross-references and note down how the whole story of Scripture connects here." },
             { id: 'step-6', placement: 'bottom', title: "Step 6: Core Truth", text: "Finally, summarize your main takeaways right in the center. Who is God in this passage, and how should you respond?" },
-            { id: 'step-7', placement: 'outer-left', title: "Step 7: Tools Menu", text: "When you are done, click this tools button! A side panel will appear where you can enable helpful video overviews, swap color themes, export your beautifully padded worksheet as a file, or clear the form to start over." }
+            { id: 'step-7', placement: 'outer-left', title: "Step 7: Tools Menu", text: "When you are done, click this tools button! A side panel will appear where you can swap color themes, export your beautifully padded worksheet as a file, or clear the form to start over." }
         ];
 
         let currentStepIndex = 0;
