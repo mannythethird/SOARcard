@@ -12,7 +12,6 @@
     <style>
         /* Define Color Themes using CSS Variables */
         :root {
-            /* Default: Sea of Galilee (Original Cool Pastels) */
             --bg-tl: #e4f6f5;
             --bg-tr: #e1f0fb;
             --bg-bl: #e6e6fa;
@@ -77,9 +76,7 @@
             transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .sidebar.active {
-            right: 0; 
-        }
+        .sidebar.active { right: 0; }
 
         .sidebar-header {
             display: flex;
@@ -107,9 +104,7 @@
             padding: 0;
         }
 
-        .close-sidebar:hover {
-            color: #333;
-        }
+        .close-sidebar:hover { color: #333; }
 
         .sidebar-section {
             display: flex;
@@ -123,6 +118,17 @@
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+        }
+
+        .sidebar-section .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: normal;
+            text-transform: none;
+            color: #444;
+            cursor: pointer;
+            font-size: 14px;
         }
 
         .sidebar-select {
@@ -151,22 +157,12 @@
             width: 100%;
         }
 
-        .sidebar-btn:hover {
-            background-color: #e0e0e0;
-        }
-
-        .danger-btn {
-            color: #d32f2f;
-            background-color: #fff;
-            border-color: #ffcdd2;
-        }
-
-        .danger-btn:hover {
-            background-color: #ffebee;
-        }
+        .sidebar-btn:hover { background-color: #e0e0e0; }
+        .danger-btn { color: #d32f2f; background-color: #fff; border-color: #ffcdd2; }
+        .danger-btn:hover { background-color: #ffebee; }
 
         /* =========================================
-           MAIN WORKSHEET CSS
+           MAIN LAYOUT & WORKSHEET CSS
            ========================================= */
         .main-content {
             flex-grow: 1;
@@ -176,14 +172,97 @@
             transition: filter 0.3s ease;
         }
 
-        body.sidebar-open .main-content {
-            filter: brightness(0.95);
+        body.sidebar-open .main-content { filter: brightness(0.95); }
+
+        .layout-wrapper {
+            display: flex;
+            gap: 30px;
+            max-width: 1250px;
+            width: 100%;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* Dynamically toggled column so center card stays perfectly centered when off */
+        .study-tip-column {
+            width: 340px;
+            flex-shrink: 0;
+            display: none; 
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .study-tip-card {
+            background: #ffffff;
+            color: #333;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            display: flex; 
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .study-tip-card .tip-header {
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+            color: #000;
+        }
+
+        .study-tip-card p {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        /* Video Thumbnail Styling */
+        .video-thumbnail-container {
+            display: none; 
+            position: relative;
+            text-decoration: none;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .video-thumbnail-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .video-thumbnail-container img {
+            width: 100%;
+            display: block;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 30, 30, 0.85);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
         }
 
         .app-wrapper {
             position: relative;
             width: 100%;
             max-width: 880px; 
+            flex-shrink: 0;
         }
 
         .worksheet-container {
@@ -200,28 +279,33 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .logo {
-            font-size: 54px;
+            font-size: 58px;
             letter-spacing: 2px;
             color: #000;
+            line-height: 0.9;
+        }
+
+        .logo-subtitle {
+            font-size: 15px;
+            letter-spacing: 9.5px;
+            color: #000;
+            padding-left: 9.5px; 
+            margin-top: 5px;
             line-height: 1;
         }
 
-        .logo-o {
-            position: relative;
-            display: inline-block;
-        }
-
-        .logo-star {
-            font-size: 18px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+        .logo-o { position: relative; display: inline-block; }
+        .logo-star { font-size: 19px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 
         .scripture-box {
             display: flex;
@@ -235,20 +319,8 @@
             transition: all 0.3s ease;
         }
 
-        .scripture-box span {
-            color: #555;
-            font-size: 18px;
-            margin-right: 10px;
-        }
-
-        .scripture-box input {
-            border: none;
-            outline: none;
-            flex-grow: 1;
-            font-family: inherit;
-            font-size: 18px;
-            background: transparent;
-        }
+        .scripture-box span { color: #555; font-size: 18px; margin-right: 10px; }
+        .scripture-box input { border: none; outline: none; flex-grow: 1; font-family: inherit; font-size: 18px; background: transparent; }
 
         .grid-container {
             display: grid;
@@ -259,11 +331,13 @@
             position: relative;
         }
 
+        /* Quadrant must be block for floats to wrap text correctly */
         .quadrant {
             padding: 20px;
-            display: flex;
-            flex-direction: column;
+            display: block; 
             transition: all 0.3s ease;
+            box-sizing: border-box;
+            height: 100%;
         }
 
         .bg-top-left { background-color: var(--bg-tl); }
@@ -274,25 +348,31 @@
         .quadrant p {
             font-size: 15px;
             color: #222;
-            margin: 0 0 15px 0;
+            margin: 0 0 10px 0;
             line-height: 1.4;
+            font-weight: bold;
         }
 
-        .quadrant.bottom p {
-            margin: 15px 0 0 0;
-            text-align: center;
-            order: 2;
-        }
+        /* =========================================
+           CSS SHAPE-OUTSIDE CIRCLE WRAPPING
+           ========================================= */
+        .tl-pusher { float: right; height: calc(100% - 150px); width: 0; }
+        .tl-shape { float: right; clear: right; width: 170px; height: 170px; shape-outside: circle(100% at 100% 100%); margin-right: -20px; margin-bottom: -20px; margin-left: 15px; }
 
-        .quadrant.bottom textarea {
-            order: 1;
-        }
+        .tr-pusher { float: left; height: calc(100% - 150px); width: 0; }
+        .tr-shape { float: left; clear: left; width: 170px; height: 170px; shape-outside: circle(100% at 0% 100%); margin-left: -20px; margin-bottom: -20px; margin-right: 15px; }
+
+        .bl-shape { float: right; width: 170px; height: 170px; shape-outside: circle(100% at 100% 0%); margin-right: -20px; margin-top: -20px; margin-left: 15px; margin-bottom: 5px; }
+
+        .br-shape { float: left; width: 170px; height: 170px; shape-outside: circle(100% at 0% 0%); margin-left: -20px; margin-top: -20px; margin-right: 15px; margin-bottom: 5px; }
 
         .center-circle {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto; 
             width: 340px;
             height: 340px;
             background-color: #fff;
@@ -307,18 +387,9 @@
             transition: all 0.3s ease;
         }
 
-        .circle-half {
-            display: flex;
-            flex-direction: column;
-            height: 48%;
-        }
-
-        .circle-half label {
-            font-weight: bold;
-            font-size: 20px;
-            margin-bottom: 5px;
-            color: #000;
-        }
+        .circle-half { display: flex; flex-direction: column; height: 48%; }
+        .circle-half label { font-weight: bold; font-size: 20px; margin-bottom: 5px; color: #000; }
+        .circle-half textarea { text-align: center; margin: 0; height: 100%; }
 
         textarea, .rich-textarea {
             width: 100%;
@@ -330,7 +401,6 @@
             font-size: 16px;
             color: #333;
             line-height: 1.5;
-            flex-grow: 1;
             box-sizing: border-box;
         }
         
@@ -338,22 +408,6 @@
             content: attr(data-placeholder);
             color: #757575;
             pointer-events: none;
-        }
-
-        .bg-top-left .rich-textarea, 
-        .bg-top-right textarea {
-            margin-bottom: 170px;
-        }
-
-        .bg-bottom-left textarea, 
-        .bg-bottom-right textarea {
-            margin-top: 170px;
-        }
-
-        .circle-half textarea {
-            text-align: center;
-            margin: 0; 
-            height: 100%;
         }
 
         /* =========================================
@@ -381,38 +435,13 @@
             transition: top 0.4s ease-in-out, left 0.4s ease-in-out, transform 0.4s ease-in-out;
         }
 
-        #tutorial-dialog h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-size: 22px;
-            color: #333;
-        }
+        #tutorial-dialog h3 { margin-top: 0; margin-bottom: 15px; font-size: 22px; color: #333; }
+        #tutorial-text { font-size: 16px; color: #555; line-height: 1.5; margin-bottom: 20px; }
+        .tutorial-buttons { display: flex; justify-content: center; gap: 15px; }
 
-        #tutorial-text {
-            font-size: 16px;
-            color: #555;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .tutorial-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 15px;
-            font-family: inherit;
-        }
-
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 15px; font-family: inherit; }
         .btn-primary { background: #333; color: #fff; }
         .btn-primary:hover { background: #555; }
-        
         .btn-secondary { background: #e0e0e0; color: #333; }
         .btn-secondary:hover { background: #ccc; }
 
@@ -422,105 +451,33 @@
             background-color: #fff !important;
         }
         
-        .quadrant.tutorial-highlight, .scripture-box.tutorial-highlight {
-            position: relative; 
-            border-radius: 6px;
-        }
-
-        .sidebar-toggle.tutorial-highlight {
-            position: fixed !important; 
-        }
-        
-        .center-circle.tutorial-highlight {
-            position: absolute !important;
-        }
+        .quadrant.tutorial-highlight, .scripture-box.tutorial-highlight { position: relative; border-radius: 6px; }
+        .sidebar-toggle.tutorial-highlight { position: fixed !important; }
+        .center-circle.tutorial-highlight { position: absolute !important; }
 
         /* =========================================
            MOBILE RESPONSIVENESS CSS
            ========================================= */
+        @media (max-width: 1250px) {
+            .layout-wrapper { flex-direction: column; align-items: center; }
+            .study-tip-column { width: 100%; max-width: 880px; }
+        }
+
         @media (max-width: 768px) {
-            .main-content {
-                padding: 80px 10px 20px 10px; 
-            }
-
-            .worksheet-container {
-                padding: 20px;
-            }
-
-            .header {
-                flex-direction: column;
-                align-items: center;
-                gap: 20px;
-            }
-
-            .scripture-box {
-                width: 100%;
-                box-sizing: border-box;
-                justify-content: center;
-            }
-
-            .grid-container {
-                display: flex;
-                flex-direction: column;
-                height: auto;
-                gap: 10px;
-            }
-
-            .quadrant {
-                min-height: 200px;
-                border-radius: 8px;
-            }
-
-            .bg-top-left .rich-textarea, 
-            .bg-top-right textarea,
-            .bg-bottom-left textarea, 
-            .bg-bottom-right textarea {
-                margin: 0 !important;
-            }
-
-            .bg-top-left { order: 1; }
-            .bg-top-right { order: 2; }
-            .bg-bottom-left { order: 3; }
-            .bg-bottom-right { order: 4; }
-
-            .center-circle {
-                position: relative;
-                top: 0;
-                left: 0;
-                transform: none;
-                width: 100%;
-                height: auto;
-                border-radius: 12px; 
-                order: 5;
-                padding: 25px 20px;
-                margin-top: 10px;
-                gap: 20px;
-            }
-
-            .circle-half {
-                height: auto;
-            }
-
-            .circle-half textarea {
-                min-height: 100px;
-            }
-            
-            .center-circle.tutorial-highlight {
-                position: relative !important;
-            }
-
-            /* Convert floating modal to a bottom sheet for mobile */
-            #tutorial-dialog {
-                width: 100%;
-                left: 0 !important;
-                bottom: 0 !important;
-                top: auto !important;
-                transform: none !important;
-                border-radius: 20px 20px 0 0;
-                box-sizing: border-box;
-                padding-bottom: 40px; /* Safe area for bottom notches */
-                box-shadow: 0 -5px 30px rgba(0,0,0,0.3);
-            }
+            /* Disable wrapping shapes on mobile */
+            .tl-pusher, .tl-shape, .tr-pusher, .tr-shape, .bl-shape, .br-shape { display: none; }
+            .main-content { padding: 80px 10px 20px 10px; }
+            .worksheet-container { padding: 20px; }
+            .header { flex-direction: column; align-items: center; gap: 20px; }
+            .scripture-box { width: 100%; box-sizing: border-box; justify-content: center; }
+            .grid-container { display: flex; flex-direction: column; height: auto; gap: 10px; }
+            .quadrant { min-height: 200px; border-radius: 8px; }
+            .bg-top-left { order: 1; } .bg-top-right { order: 2; } .bg-bottom-left { order: 3; } .bg-bottom-right { order: 4; }
+            .center-circle { position: relative; top: auto; bottom: auto; left: auto; right: auto; margin: 10px 0 0 0; transform: none; width: 100%; height: auto; border-radius: 12px; order: 5; padding: 25px 20px; gap: 20px; }
+            .circle-half { height: auto; }
+            .circle-half textarea { min-height: 100px; }
+            .center-circle.tutorial-highlight { position: relative !important; }
+            #tutorial-dialog { width: 100%; left: 0 !important; bottom: 0 !important; top: auto !important; transform: none !important; border-radius: 20px 20px 0 0; box-sizing: border-box; padding-bottom: 40px; box-shadow: 0 -5px 30px rgba(0,0,0,0.3); }
         }
 
         /* =========================================
@@ -532,9 +489,8 @@
         body.export-mode .scripture-box { width: 300px !important; }
         body.export-mode .grid-container { display: grid !important; grid-template-columns: 1fr 1fr !important; grid-template-rows: 1fr 1fr !important; height: 900px !important; gap: 6px !important; }
         body.export-mode .quadrant { border-radius: 0 !important; }
-        body.export-mode .center-circle { position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; width: 340px !important; height: 340px !important; border-radius: 50% !important; order: unset !important; margin-top: 0 !important; }
-        body.export-mode .bg-top-left .rich-textarea, body.export-mode .bg-top-right textarea { margin-bottom: 170px !important; margin-top: 0 !important;}
-        body.export-mode .bg-bottom-left textarea, body.export-mode .bg-bottom-right textarea { margin-top: 170px !important; margin-bottom: 0 !important; }
+        body.export-mode .center-circle { position: absolute !important; top: 0 !important; bottom: 0 !important; left: 0 !important; right: 0 !important; margin: auto !important; transform: none !important; width: 340px !important; height: 340px !important; border-radius: 50% !important; order: unset !important; }
+        body.export-mode .tl-pusher, body.export-mode .tl-shape, body.export-mode .tr-pusher, body.export-mode .tr-shape, body.export-mode .bl-shape, body.export-mode .br-shape { display: block !important; }
     </style>
 </head>
 <body>
@@ -574,6 +530,14 @@
         </div>
 
         <div class="sidebar-section">
+            <label>Study Tips & Video</label>
+            <label class="toggle-label">
+                <!-- Turned off by default -->
+                <input type="checkbox" id="tipsToggle" onchange="toggleTips()"> Show Video Recommendations
+            </label>
+        </div>
+
+        <div class="sidebar-section">
             <label>Export Notes</label>
             <button class="sidebar-btn" onclick="exportToPNG()">📥 Save as PNG</button>
             <button class="sidebar-btn" onclick="exportToPDF()">📄 Save as PDF</button>
@@ -586,61 +550,92 @@
     </div>
 
     <div class="main-content">
-        <div class="app-wrapper">
+        <div class="layout-wrapper">
             
-            <!-- The area designated for export -->
-            <div class="worksheet-container" id="capture-area">
-                
-                <!-- Header -->
-                <div class="header">
-                    <div class="logo">
-                        S<span class="logo-o">O<span class="logo-star">✦</span></span>AR
-                    </div>
-                    <div class="scripture-box" id="step-1">
-                        <span>Scripture:</span>
-                        <input type="text" id="scriptureInput" placeholder="Enter verse here...">
-                    </div>
-                </div>
-
-                <!-- 4 Quadrants -->
-                <div class="grid-container">
+            <!-- Left Column for Study Tip / Embedded Video -->
+            <div class="study-tip-column" id="studyTipColumn">
+                <div id="tipCard" class="study-tip-card">
+                    <div class="tip-header">🎥 Study Tip</div>
+                    <p>We recommend watching the Bible Project's overview video for <strong id="tipBookName">this book</strong> to grasp the overarching narrative before you study!</p>
                     
-                    <!-- Top Left -->
-                    <div class="quadrant bg-top-left" id="step-2">
-                        <p>What context is important to understand this Scripture? (author, time, purpose)</p>
-                        <div id="contextArea" class="rich-textarea" contenteditable="true" data-placeholder="Type your context notes here..."></div>
-                    </div>
+                    <!-- Clickable Video Thumbnail (Bypasses local iframe restrictions) -->
+                    <a id="tipVideoLink" href="" target="_blank" class="video-thumbnail-container">
+                        <img id="tipVideoThumb" src="" alt="Video Thumbnail">
+                        <div class="play-button">▶ Watch on YouTube</div>
+                    </a>
+                    
+                    <p id="tipMissingText" style="display:none; font-size: 13px; color: #888; font-style: italic;">
+                        (Video ID missing in code database. Add to view.)
+                    </p>
+                </div>
+            </div>
 
-                    <!-- Top Right -->
-                    <div class="quadrant bg-top-right" id="step-3">
-                        <p>What am I observing as I read the text? (repetition, confusing terms, hyperlinks)</p>
-                        <textarea placeholder="Type your observations here..."></textarea>
-                    </div>
-
-                    <!-- Bottom Left -->
-                    <div class="quadrant bg-bottom-left bottom" id="step-4">
-                        <textarea placeholder="Type your application thoughts here..."></textarea>
-                        <p>How can I apply this truth about God into my daily thoughts and actions?</p>
-                    </div>
-
-                    <!-- Bottom Right -->
-                    <div class="quadrant bg-bottom-right bottom" id="step-5">
-                        <textarea placeholder="Type your reflection notes here..."></textarea>
-                        <p>Re-read, journal, pray, spend time in reflection with God and community.</p>
-                    </div>
-
-                    <!-- Center Circle -->
-                    <div class="center-circle" id="step-6">
-                        <div class="circle-half">
-                            <label>God is...</label>
-                            <textarea></textarea>
+            <!-- The Main App / Worksheet designated for export -->
+            <div class="app-wrapper">
+                <div class="worksheet-container" id="capture-area">
+                    
+                    <!-- Header -->
+                    <div class="header">
+                        <div class="logo-container">
+                            <div class="logo">
+                                S<span class="logo-o">O<span class="logo-star">✦</span></span>AR
+                            </div>
+                            <div class="logo-subtitle">observations</div>
                         </div>
-                        <div class="circle-half">
-                            <label>Therefore, I...</label>
-                            <textarea></textarea>
+                        
+                        <div class="scripture-box" id="step-1">
+                            <span>Scripture:</span>
+                            <input type="text" id="scriptureInput" placeholder="Enter verse here...">
                         </div>
                     </div>
 
+                    <!-- 4 Quadrants -->
+                    <div class="grid-container">
+                        
+                        <!-- Top Left -->
+                        <div class="quadrant bg-top-left" id="step-2">
+                            <div class="tl-pusher"></div>
+                            <div class="tl-shape"></div>
+                            <p>What context is important to understand this Scripture? (author, time, purpose)</p>
+                            <div id="contextArea" class="rich-textarea" contenteditable="true" data-placeholder="Type your context notes here..."></div>
+                        </div>
+
+                        <!-- Top Right -->
+                        <div class="quadrant bg-top-right" id="step-3">
+                            <div class="tr-pusher"></div>
+                            <div class="tr-shape"></div>
+                            <p>What words do I need to study further? (repeated words, confusing words, etc.)</p>
+                            <!-- Swapped to rich-textarea so floats wrap effectively -->
+                            <div class="rich-textarea" contenteditable="true" data-placeholder="Type words to study here..."></div>
+                        </div>
+
+                        <!-- Bottom Left -->
+                        <div class="quadrant bg-bottom-left" id="step-4">
+                            <div class="bl-shape"></div>
+                            <p>What questions come to mind as you read the passage?</p>
+                            <div class="rich-textarea" contenteditable="true" data-placeholder="Type your questions here..."></div>
+                        </div>
+
+                        <!-- Bottom Right -->
+                        <div class="quadrant bg-bottom-right" id="step-5">
+                            <div class="br-shape"></div>
+                            <p>How does this passage link with other parts of Scripture? (cross-reference)</p>
+                            <div class="rich-textarea" contenteditable="true" data-placeholder="Type cross-references here..."></div>
+                        </div>
+
+                        <!-- Center Circle -->
+                        <div class="center-circle" id="step-6">
+                            <div class="circle-half">
+                                <label>God is...</label>
+                                <textarea></textarea>
+                            </div>
+                            <div class="circle-half">
+                                <label>Therefore, I...</label>
+                                <textarea></textarea>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -649,7 +644,7 @@
     <!-- JavaScript System -->
     <script>
         // =========================================
-        // SIDEBAR TOGGLE LOGIC
+        // SIDEBAR & SETTINGS LOGIC
         // =========================================
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -657,9 +652,14 @@
             document.body.classList.toggle('sidebar-open');
         }
 
-        // =========================================
-        // THEME CHANGER
-        // =========================================
+        // Toggled off by default
+        let tipsEnabled = false; 
+        
+        function toggleTips() {
+            tipsEnabled = document.getElementById('tipsToggle').checked;
+            triggerContextFill(); 
+        }
+
         function changeTheme(theme) {
             const root = document.documentElement;
             if (theme === 'galilee') {
@@ -668,38 +668,26 @@
                 root.style.setProperty('--bg-bl', '#e6e6fa');
                 root.style.setProperty('--bg-br', '#ded9f0');
             } else if (theme === 'eden') {
-                root.style.setProperty('--bg-tl', '#E9F5DB'); 
-                root.style.setProperty('--bg-tr', '#CFE1B9'); 
-                root.style.setProperty('--bg-bl', '#F2E8CF'); 
-                root.style.setProperty('--bg-br', '#F8EDEB'); 
+                root.style.setProperty('--bg-tl', '#E9F5DB'); root.style.setProperty('--bg-tr', '#CFE1B9'); root.style.setProperty('--bg-bl', '#F2E8CF'); root.style.setProperty('--bg-br', '#F8EDEB'); 
             } else if (theme === 'wilderness') {
-                root.style.setProperty('--bg-tl', '#FDECDA'); 
-                root.style.setProperty('--bg-tr', '#F6DFB6'); 
-                root.style.setProperty('--bg-bl', '#EED1B4'); 
-                root.style.setProperty('--bg-br', '#E8C8BE'); 
+                root.style.setProperty('--bg-tl', '#FDECDA'); root.style.setProperty('--bg-tr', '#F6DFB6'); root.style.setProperty('--bg-bl', '#EED1B4'); root.style.setProperty('--bg-br', '#E8C8BE'); 
             } else if (theme === 'joseph') {
-                root.style.setProperty('--bg-tl', '#FFE5D9'); 
-                root.style.setProperty('--bg-tr', '#FFF1E6'); 
-                root.style.setProperty('--bg-bl', '#FCD5CE'); 
-                root.style.setProperty('--bg-br', '#E8E8F2'); 
+                root.style.setProperty('--bg-tl', '#FFE5D9'); root.style.setProperty('--bg-tr', '#FFF1E6'); root.style.setProperty('--bg-bl', '#FCD5CE'); root.style.setProperty('--bg-br', '#E8E8F2'); 
             } else if (theme === 'covenant') {
-                root.style.setProperty('--bg-tl', '#E2E2FD'); 
-                root.style.setProperty('--bg-tr', '#D3F3EE'); 
-                root.style.setProperty('--bg-bl', '#FFF2CC'); 
-                root.style.setProperty('--bg-br', '#DCE8FF'); 
+                root.style.setProperty('--bg-tl', '#E2E2FD'); root.style.setProperty('--bg-tr', '#D3F3EE'); root.style.setProperty('--bg-bl', '#FFF2CC'); root.style.setProperty('--bg-br', '#DCE8FF'); 
             }
         }
 
-        // =========================================
-        // SETTINGS & UI LOGIC
-        // =========================================
         function clearForm() {
             if(confirm("Are you sure you want to completely clear this worksheet? All your notes will be lost.")) {
                 document.getElementById('scriptureInput').value = '';
-                document.getElementById('contextArea').innerHTML = '';
+                document.getElementById('studyTipColumn').style.display = 'none';
                 
                 const textareas = document.querySelectorAll('textarea');
                 textareas.forEach(ta => ta.value = '');
+                
+                const richTextareas = document.querySelectorAll('.rich-textarea');
+                richTextareas.forEach(ta => ta.innerHTML = '');
                 
                 document.getElementById('sidebar').classList.remove('active');
                 document.body.classList.remove('sidebar-open');
@@ -709,25 +697,13 @@
         // =========================================
         // EXPORT LOGIC
         // =========================================
-        const exportOptions = {
-            scale: 2, 
-            useCORS: true,
-            backgroundColor: '#ffffff',
-            windowWidth: 1000 // Give canvas plenty of room for the desktop render
-        };
+        const exportOptions = { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 1000 };
 
         function prepareForExport(callback) {
-            // Close sidebar
             document.getElementById('sidebar').classList.remove('active');
             document.body.classList.remove('sidebar-open');
-            
-            // Force Desktop Layout via Class
             document.body.classList.add('export-mode');
-            
-            // Scroll top to prevent iOS clipping bugs
             window.scrollTo(0, 0); 
-
-            // Give the browser time to reflow the DOM to the desktop grid before capturing
             setTimeout(callback, 500);
         }
 
@@ -755,7 +731,6 @@
                     restoreAfterExport();
                     const imgData = canvas.toDataURL('image/png');
                     const { jsPDF } = window.jspdf;
-                    
                     const pdf = new jsPDF('p', 'pt', [canvas.width, canvas.height]);
                     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
                     pdf.save('SOAR_Bible_Study.pdf');
@@ -764,34 +739,126 @@
         }
 
         // =========================================
-        // AUTO-FILL CONTEXT LOGIC
+        // AUTO-FILL CONTEXT LOGIC (66 BOOKS)
         // =========================================
         const bibleData = {
-            "joshua": { author: "Joshua (Traditionally)", time: "1400–1370 BC", purpose: "To document the conquest of Canaan and the faithfulness of God in fulfilling His promises." },
-            "acts": { author: "Luke", time: "60-70 AD", purpose: "To show how the good news spread." },
-            "matthew": { author: "Matthew", time: "50-65 AD", purpose: "To present Jesus as the promised Messiah to a largely Jewish audience." },
-            "mark": { author: "John Mark", time: "50-65 AD", purpose: "To present the words and works of Christ as the suffering servant." },
-            "luke": { author: "Luke", time: "50-62 AD", purpose: "To provide an orderly historical account of Jesus' life and ministry." },
-            "john": { author: "John the Apostle", time: "80-95 AD", purpose: "So that readers may believe that Jesus is the Christ and have life in His name." },
-            "romans": { author: "Paul", time: "57 AD", purpose: "To explain that salvation is offered through the gospel of Jesus Christ." },
-            "revelation": { author: "John the Apostle", time: "95 AD", purpose: "To encourage and strengthen early Christians facing persecution and trials through prophetic visions." }
+            "genesis": { author: "Moses", time: "1440-1400 BC", audience: "Israelites", purpose: "To record the origins of the world and God's covenant.", youtubeId: "KOUV7mWDI34" },
+            "exodus": { author: "Moses", time: "1440-1400 BC", audience: "Israelites", purpose: "To document God's deliverance of Israel from Egypt.", youtubeId: "jH_aojNJM3E" },
+            "leviticus": { author: "Moses", time: "1440-1400 BC", audience: "Israelites and Priests", purpose: "To instruct Israel on how to live holy lives.", youtubeId: "IJ-FekWUZzE" },
+            "numbers": { author: "Moses", time: "1440-1400 BC", audience: "Israelites", purpose: "To show the consequences of unbelief.", youtubeId: "tp5MIrMZFqo" },
+            "deuteronomy": { author: "Moses", time: "1400 BC", audience: "Israelites", purpose: "To remind the Israelites of the Law.", youtubeId: "q5QECJxV6Ro" },
+            "joshua": { author: "Joshua", time: "1400-1370 BC", audience: "Israelites", purpose: "To document the conquest of Canaan.", youtubeId: "JqOqJlFF_eU" },
+            "judges": { author: "Samuel", time: "1050-1000 BC", audience: "Israelites", purpose: "To show Israel's cycle of sin and need for a king.", youtubeId: "kOYy8iCfIJ4" },
+            "ruth": { author: "Unknown", time: "1000 BC", audience: "Israelites", purpose: "To demonstrate God's providence and trace David's lineage.", youtubeId: "OPaHsN4Vuig" },
+            "1 samuel": { author: "Unknown", time: "930 BC", audience: "Israelites", purpose: "To record the transition to the monarchy.", youtubeId: "" },
+            "2 samuel": { author: "Unknown", time: "930 BC", audience: "Israelites", purpose: "To document King David's reign.", youtubeId: "" },
+            "1 kings": { author: "Unknown", time: "560-540 BC", audience: "Exiled Israelites", purpose: "To trace the history of the monarchy from Solomon.", youtubeId: "" },
+            "2 kings": { author: "Unknown", time: "560-540 BC", audience: "Exiled Israelites", purpose: "To record the decline and fall of Israel and Judah.", youtubeId: "" },
+            "1 chronicles": { author: "Ezra", time: "450-425 BC", audience: "Returned Exiles", purpose: "To encourage the returned exiles.", youtubeId: "" },
+            "2 chronicles": { author: "Ezra", time: "450-425 BC", audience: "Returned Exiles", purpose: "To highlight the spiritual heritage of Judah.", youtubeId: "" },
+            "ezra": { author: "Ezra", time: "440 BC", audience: "Returned Exiles", purpose: "To record the return from Babylon.", youtubeId: "" },
+            "nehemiah": { author: "Nehemiah", time: "430 BC", audience: "Returned Exiles", purpose: "To document the rebuilding of Jerusalem's walls.", youtubeId: "" },
+            "esther": { author: "Unknown", time: "470-460 BC", audience: "Jewish people in Persia", purpose: "To show God's providential protection.", youtubeId: "" },
+            "job": { author: "Unknown", time: "Unknown", audience: "Universal audience", purpose: "To explore the problem of suffering.", youtubeId: "" },
+            "psalms": { author: "David, Asaph, et al.", time: "1440-400 BC", audience: "Israelites", purpose: "To provide prayers and hymns for worship.", youtubeId: "" },
+            "proverbs": { author: "Solomon", time: "970-700 BC", audience: "Youth of Israel", purpose: "To impart moral and practical wisdom.", youtubeId: "" },
+            "ecclesiastes": { author: "Solomon", time: "935 BC", audience: "Israelites", purpose: "To demonstrate the futility of life without God.", youtubeId: "" },
+            "song of solomon": { author: "Solomon", time: "970-930 BC", audience: "Israelites", purpose: "To celebrate marital love.", youtubeId: "" },
+            "isaiah": { author: "Isaiah", time: "700-680 BC", audience: "Judah", purpose: "To warn of coming judgment and promise the Messiah.", youtubeId: "" },
+            "jeremiah": { author: "Jeremiah", time: "627-580 BC", audience: "Judah", purpose: "To urge repentance and promise a New Covenant.", youtubeId: "" },
+            "lamentations": { author: "Jeremiah", time: "586 BC", audience: "Exiled Judah", purpose: "To express sorrow over the destruction of Jerusalem.", youtubeId: "" },
+            "ezekiel": { author: "Ezekiel", time: "590-570 BC", audience: "Jewish exiles", purpose: "To declare God's judgment and promise restoration.", youtubeId: "" },
+            "daniel": { author: "Daniel", time: "530 BC", audience: "Jewish exiles", purpose: "To reveal God's sovereign control over world empires.", youtubeId: "" },
+            "hosea": { author: "Hosea", time: "750-710 BC", audience: "Israel", purpose: "To illustrate God's steadfast love for His unfaithful people.", youtubeId: "" },
+            "joel": { author: "Joel", time: "835-796 BC", audience: "Judah", purpose: "To warn of the coming 'Day of the Lord'.", youtubeId: "" },
+            "amos": { author: "Amos", time: "760-750 BC", audience: "Israel", purpose: "To pronounce judgment on Israel for social injustice.", youtubeId: "" },
+            "obadiah": { author: "Obadiah", time: "850 or 586 BC", audience: "Edom and Judah", purpose: "To prophesy the destruction of Edom.", youtubeId: "" },
+            "jonah": { author: "Jonah", time: "785-760 BC", audience: "Israel", purpose: "To show the extent of God's grace to Gentile nations.", youtubeId: "" },
+            "micah": { author: "Micah", time: "735-700 BC", audience: "Both Israel and Judah", purpose: "To warn of judgment and prophesy the birth of the Messiah.", youtubeId: "" },
+            "nahum": { author: "Nahum", time: "663-612 BC", audience: "Judah and Nineveh", purpose: "To pronounce the final judgment of Nineveh.", youtubeId: "" },
+            "habakkuk": { author: "Habakkuk", time: "615-605 BC", audience: "Judah", purpose: "To dialogue with God about His use of the Babylonians.", youtubeId: "" },
+            "zephaniah": { author: "Zephaniah", time: "635-625 BC", audience: "Judah", purpose: "To warn of the universal 'Day of the Lord'.", youtubeId: "" },
+            "haggai": { author: "Haggai", time: "520 BC", audience: "Returned exiles", purpose: "To encourage the rebuilding of the temple.", youtubeId: "" },
+            "zechariah": { author: "Zechariah", time: "520-470 BC", audience: "Returned exiles", purpose: "To prophesy extensively about the coming Messiah.", youtubeId: "" },
+            "malachi": { author: "Malachi", time: "430 BC", audience: "Returned exiles", purpose: "To rebuke spiritual apathy and promise the coming Messiah.", youtubeId: "" },
+            "matthew": { author: "Matthew", time: "50-65 AD", audience: "Jewish audience", purpose: "To present Jesus as the promised Messiah.", youtubeId: "3Dv4-n6OYGI" },
+            "mark": { author: "John Mark", time: "50-65 AD", audience: "Gentile Christians", purpose: "To present Christ as the suffering servant.", youtubeId: "HGHqu9-DtXk" },
+            "luke": { author: "Luke", time: "50-62 AD", audience: "Theophilus/Gentiles", purpose: "To provide an orderly, historically accurate account of Jesus.", youtubeId: "XIb_dCXNiEQ" },
+            "john": { author: "John", time: "80-95 AD", audience: "All believers", purpose: "So that readers may believe that Jesus is the Son of God.", youtubeId: "G-2e9mMf7E8" },
+            "acts": { author: "Luke", time: "60-70 AD", audience: "Early Church", purpose: "To document the birth and spread of the early Church.", youtubeId: "CGbNw855ksw" },
+            "romans": { author: "Paul", time: "57 AD", audience: "Christians in Rome", purpose: "To systematically explain the Gospel.", youtubeId: "ej_6dVdJSIU" },
+            "1 corinthians": { author: "Paul", time: "55 AD", audience: "Church in Corinth", purpose: "To correct moral and doctrinal divisions.", youtubeId: "" },
+            "2 corinthians": { author: "Paul", time: "56 AD", audience: "Church in Corinth", purpose: "To defend his apostolic authority.", youtubeId: "" },
+            "galatians": { author: "Paul", time: "49 AD", audience: "Churches in Galatia", purpose: "To defend justification by faith alone.", youtubeId: "" },
+            "ephesians": { author: "Paul", time: "60-62 AD", audience: "Church in Ephesus", purpose: "To explain the believer's rich spiritual blessings.", youtubeId: "" },
+            "philippians": { author: "Paul", time: "60-62 AD", audience: "Church in Philippi", purpose: "To encourage unity and teach about joy in Christ.", youtubeId: "" },
+            "colossians": { author: "Paul", time: "60-62 AD", audience: "Church in Colossae", purpose: "To emphasize the absolute supremacy of Christ.", youtubeId: "" },
+            "1 thessalonians": { author: "Paul", time: "51 AD", audience: "Church in Thessalonica", purpose: "To encourage a young church facing persecution.", youtubeId: "" },
+            "2 thessalonians": { author: "Paul", time: "51-52 AD", audience: "Church in Thessalonica", purpose: "To correct misunderstandings about the Day of the Lord.", youtubeId: "" },
+            "1 timothy": { author: "Paul", time: "62-64 AD", audience: "Timothy", purpose: "To instruct on church leadership and combating false doctrine.", youtubeId: "" },
+            "2 timothy": { author: "Paul", time: "67 AD", audience: "Timothy", purpose: "To encourage endurance before Paul's execution.", youtubeId: "" },
+            "titus": { author: "Paul", time: "62-64 AD", audience: "Titus", purpose: "To instruct on appointing elders in a difficult environment.", youtubeId: "" },
+            "philemon": { author: "Paul", time: "60-62 AD", audience: "Philemon", purpose: "To appeal for the forgiveness of a runaway slave.", youtubeId: "" },
+            "hebrews": { author: "Unknown", time: "65-68 AD", audience: "Jewish Christians", purpose: "To prove the superiority of Christ over the Old Covenant.", youtubeId: "" },
+            "james": { author: "James", time: "45-50 AD", audience: "Jewish Christians", purpose: "To emphasize that genuine faith manifests in works.", youtubeId: "" },
+            "1 peter": { author: "Peter", time: "60-65 AD", audience: "Scattered Christians", purpose: "To encourage believers suffering for their faith.", youtubeId: "" },
+            "2 peter": { author: "Peter", time: "65-68 AD", audience: "Christians everywhere", purpose: "To warn against false teachers.", youtubeId: "" },
+            "1 john": { author: "John", time: "85-95 AD", audience: "Believers in Asia Minor", purpose: "To assure believers of their salvation.", youtubeId: "" },
+            "2 john": { author: "John", time: "85-95 AD", audience: "A local church", purpose: "To encourage walking in truth and love.", youtubeId: "" },
+            "3 john": { author: "John", time: "85-95 AD", audience: "Gaius", purpose: "To commend hospitality to traveling missionaries.", youtubeId: "" },
+            "jude": { author: "Jude", time: "65-80 AD", audience: "Jewish Christians", purpose: "To urgently contend for the faith against apostates.", youtubeId: "" },
+            "revelation": { author: "John", time: "90-95 AD", audience: "Seven churches of Asia", purpose: "To reveal the ultimate victory of Jesus Christ.", youtubeId: "5nvVVcYD-0w" }
         };
 
-        const scriptureInput = document.getElementById('scriptureInput');
-        const contextArea = document.getElementById('contextArea');
+        function triggerContextFill() {
+            const inputText = document.getElementById('scriptureInput').value.trim().toLowerCase();
+            const contextArea = document.getElementById('contextArea');
+            const studyTipColumn = document.getElementById('studyTipColumn');
+            const tipBookName = document.getElementById('tipBookName');
+            const tipVideoLink = document.getElementById('tipVideoLink');
+            const tipVideoThumb = document.getElementById('tipVideoThumb');
+            const tipMissingText = document.getElementById('tipMissingText');
+            
+            let matchedBook = null;
+            let displayBookName = "";
 
-        scriptureInput.addEventListener('input', function(e) {
-            const inputText = e.target.value.trim().toLowerCase();
             for (const book in bibleData) {
                 if (inputText.startsWith(book)) {
-                    if (contextArea.textContent.trim() === "" || contextArea.textContent.startsWith("Author:")) {
-                        const data = bibleData[book];
-                        contextArea.innerHTML = `<strong>Author:</strong> ${data.author}<br><br><strong>Time Period:</strong> ${data.time}<br><br><strong>Purpose:</strong> ${data.purpose}`;
-                    }
+                    matchedBook = book;
+                    displayBookName = book.replace(/\b\w/g, l => l.toUpperCase());
                     break; 
                 }
             }
-        });
+
+            if (matchedBook) {
+                if (contextArea.textContent.trim() === "" || contextArea.textContent.startsWith("Author:")) {
+                    const data = bibleData[matchedBook];
+                    contextArea.innerHTML = `<strong>Author:</strong> ${data.author}<br><br><strong>Time Period:</strong> ${data.time}<br><br><strong>Audience:</strong> ${data.audience}<br><br><strong>Purpose:</strong> ${data.purpose}`;
+                }
+                
+                if (tipsEnabled) {
+                    tipBookName.innerText = displayBookName;
+                    studyTipColumn.style.display = 'flex';
+                    
+                    const data = bibleData[matchedBook];
+                    if (data.youtubeId && data.youtubeId.trim() !== "") {
+                        tipVideoLink.href = "https://www.youtube.com/watch?v=" + data.youtubeId;
+                        tipVideoThumb.src = "https://img.youtube.com/vi/" + data.youtubeId + "/hqdefault.jpg";
+                        tipVideoLink.style.display = 'block';
+                        tipMissingText.style.display = 'none';
+                    } else {
+                        tipVideoLink.style.display = 'none';
+                        tipMissingText.style.display = 'block';
+                    }
+                } else {
+                    studyTipColumn.style.display = 'none';
+                }
+            } else {
+                studyTipColumn.style.display = 'none';
+            }
+        }
+
+        document.getElementById('scriptureInput').addEventListener('input', triggerContextFill);
 
         // =========================================
         // TUTORIAL LOGIC & DYNAMIC POSITIONING
@@ -799,12 +866,12 @@
         const tutorialSteps = [
             { id: null, title: "Welcome to SOAR", text: "Would you like to run through a quick example to see how to use this study method?" },
             { id: 'step-1', placement: 'bottom', title: "Step 1: Scripture", text: "Start by entering a passage. Try typing <strong>'Joshua 1'</strong> into this box to see what happens, then click Next." },
-            { id: 'step-2', placement: 'outer-left', title: "Step 2: Context Added!", text: "Notice how the author, time, and purpose were added automatically. This foundational context helps ground your study." },
-            { id: 'step-3', placement: 'outer-right', title: "Step 3: Observation", text: "Next, write down patterns you see. For Joshua 1, you might note the repetition of the phrase <em>'be strong and courageous'</em>." },
-            { id: 'step-4', placement: 'outer-left', title: "Step 4: Application", text: "How does this apply to you? Note your thoughts on how you can integrate this truth into your daily actions." },
-            { id: 'step-5', placement: 'outer-right', title: "Step 5: Reflection", text: "Jot down your prayers or plans for continued reflection with God and your community." },
+            { id: 'step-2', placement: 'outer-left', title: "Step 2: Context Added!", text: "Notice how the author, time, audience, and purpose were added automatically. This foundational context helps ground your study." },
+            { id: 'step-3', placement: 'outer-right', title: "Step 3: Word Study", text: "Next, note down any words you need to study further. Open your physical Bible to look for repeated or confusing terms and define them here." },
+            { id: 'step-4', placement: 'outer-left', title: "Step 4: Questions", text: "As you read, what questions come to mind? Jot them down here so you can explore them later." },
+            { id: 'step-5', placement: 'outer-right', title: "Step 5: Cross-Reference", text: "How does this passage link to others? Open your physical Bible again to check its cross-references and note down how the whole story of Scripture connects here." },
             { id: 'step-6', placement: 'bottom', title: "Step 6: Core Truth", text: "Finally, summarize your main takeaways right in the center. Who is God in this passage, and how should you respond?" },
-            { id: 'step-7', placement: 'outer-left', title: "Step 7: Tools Menu", text: "When you are done, click this tools button! A side panel will appear where you can swap color themes, export your beautifully padded worksheet as a file, or clear the form to start over." }
+            { id: 'step-7', placement: 'outer-left', title: "Step 7: Tools Menu", text: "When you are done, click this tools button! A side panel will appear where you can enable helpful video overviews, swap color themes, export your beautifully padded worksheet as a file, or clear the form to start over." }
         ];
 
         let currentStepIndex = 0;
@@ -845,10 +912,8 @@
         function updateDialogPosition(step) {
             const dialog = document.getElementById('tutorial-dialog');
             
-            // Skip dynamic positioning on small mobile screens and use Bottom Sheet logic
             if (window.innerWidth <= 768) {
                 dialog.style.transform = ''; 
-                // Auto-scroll the highlighted element into view so the bottom sheet doesn't cover it
                 if (step.id) {
                     const target = document.getElementById(step.id);
                     target.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -856,7 +921,6 @@
                 return; 
             }
 
-            // Desktop dynamic positioning below
             if (!step.id) {
                 dialog.style.top = '50%';
                 dialog.style.left = '50%';
